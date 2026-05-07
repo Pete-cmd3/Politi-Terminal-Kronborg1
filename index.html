@@ -1,0 +1,1923 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kronborg Politi MDT</title>
+  <style>
+    :root {
+      --bg: #071528;
+      --bg-soft: #0d1f39;
+      --panel: rgba(19, 41, 74, 0.94);
+      --panel-2: rgba(11, 27, 49, 0.96);
+      --line: rgba(69, 112, 184, 0.42);
+      --line-strong: #276ef1;
+      --text: #f2f6ff;
+      --muted: #88a3cc;
+      --green: #22c55e;
+      --yellow: #fbbf24;
+      --red: #ef4444;
+      --shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #04111f;
+      color: var(--text);
+    }
+
+    body {
+      background-image:
+        linear-gradient(rgba(4, 17, 31, 0.78), rgba(4, 17, 31, 0.9)),
+        url("./kronborg-bg.png");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
+    button, input, select, textarea {
+      font: inherit;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .screen {
+      min-height: 100vh;
+      padding: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .auth-card,
+    .gate-card {
+      width: min(100%, 860px);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+    }
+
+    .auth-card {
+      max-width: 430px;
+    }
+
+    .card-top {
+      padding: 34px 28px 24px;
+      border-bottom: 2px solid var(--line-strong);
+      text-align: center;
+    }
+
+    .brand-badge {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 18px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, #2456ae 0%, #11274b 100%);
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+
+    h1, h2, h3, h4, p {
+      margin: 0;
+    }
+
+    .title {
+      font-size: clamp(34px, 5vw, 56px);
+      font-weight: 900;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .subtitle {
+      margin-top: 12px;
+      color: #8fa7cb;
+      text-transform: uppercase;
+      letter-spacing: 5px;
+      font-size: 14px;
+    }
+
+    .form-body {
+      padding: 28px;
+    }
+
+    .field-label,
+    .section-label {
+      display: block;
+      margin-bottom: 8px;
+      color: #7f9ac0;
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+    }
+
+    .field {
+      width: 100%;
+      border: 1px solid rgba(70, 108, 167, 0.42);
+      background: rgba(7, 20, 38, 0.92);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 14px 16px;
+      outline: none;
+    }
+
+    .field:focus {
+      border-color: var(--line-strong);
+      box-shadow: 0 0 0 3px rgba(39, 110, 241, 0.16);
+    }
+
+    .stack {
+      display: grid;
+      gap: 18px;
+    }
+
+    .btn {
+      border: 1px solid rgba(80, 121, 190, 0.5);
+      background: #17305a;
+      color: var(--text);
+      border-radius: 8px;
+      padding: 13px 18px;
+      cursor: pointer;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .btn:hover {
+      filter: brightness(1.08);
+    }
+
+    .btn-primary {
+      background: linear-gradient(180deg, #2e78ff 0%, #276ef1 100%);
+      border-color: #3d84ff;
+    }
+
+    .btn-danger {
+      background: rgba(123, 25, 38, 0.9);
+      border-color: rgba(235, 85, 106, 0.4);
+    }
+
+    .btn-ghost {
+      background: transparent;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .auth-footer {
+      padding: 14px 28px;
+      border-top: 1px solid var(--line);
+      background: rgba(18, 39, 70, 0.72);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .error-text {
+      color: #ff8897;
+      font-size: 14px;
+      min-height: 20px;
+    }
+
+    .gate-card {
+      max-width: 520px;
+    }
+
+    .gate-body {
+      padding: 28px;
+    }
+
+    .unit-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .unit-option {
+      padding: 18px;
+      border-radius: 10px;
+      border: 1px solid rgba(80, 121, 190, 0.42);
+      background: rgba(8, 22, 42, 0.9);
+      color: var(--text);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      cursor: pointer;
+    }
+
+    .unit-option.active {
+      border-color: #4a88ff;
+      background: rgba(40, 78, 148, 0.9);
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      padding: 14px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      background: rgba(11, 25, 45, 0.95);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(10px);
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .brand-mini {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-mini-badge {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, #2456ae 0%, #11274b 100%);
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    .brand-mini-name {
+      font-weight: 900;
+      font-size: 22px;
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+
+    .brand-mini-sub {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .nav {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      border: 1px solid transparent;
+      background: transparent;
+      color: #9eb2d2;
+      border-radius: 8px;
+      padding: 10px 12px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .nav-btn.active {
+      color: var(--text);
+      border-color: #3f7fff;
+      background: rgba(39, 110, 241, 0.18);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .clock,
+    .p-tag {
+      padding: 11px 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(10, 23, 41, 0.92);
+      font-weight: 800;
+      letter-spacing: 2px;
+    }
+
+    .status-select {
+      min-width: 165px;
+    }
+
+    .main {
+      padding: 24px;
+    }
+
+    .page {
+      display: none;
+      gap: 18px;
+    }
+
+    .page.active {
+      display: grid;
+    }
+
+    .hero {
+      background:
+        linear-gradient(180deg, rgba(17, 38, 69, 0.9), rgba(9, 20, 39, 0.92)),
+        url("./kronborg-bg.png");
+      background-size: cover;
+      background-position: center;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      min-height: 190px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .hero-kicker {
+      color: #a8bcda;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      font-size: 12px;
+    }
+
+    .hero h2 {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 900;
+      margin-top: 12px;
+      letter-spacing: 1px;
+    }
+
+    .hero-note {
+      max-width: 720px;
+      color: #d7e3f8;
+      line-height: 1.55;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .metric-card,
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .metric-card {
+      padding: 18px 20px;
+      min-height: 110px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .metric-number {
+      font-size: 44px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .metric-number.green { color: var(--green); }
+    .metric-number.yellow { color: var(--yellow); }
+    .metric-number.red { color: #ff8a8a; }
+    .metric-number.blue { color: #7cb0ff; }
+
+    .metric-label {
+      color: #9bb0d2;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1.7fr 1fr;
+      gap: 18px;
+    }
+
+    .panel-header {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(18, 38, 68, 0.76);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .panel-title {
+      font-size: 13px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #a5bcdf;
+    }
+
+    .panel-body {
+      padding: 18px;
+    }
+
+    .list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .list-item {
+      padding: 16px;
+      border: 1px solid rgba(71, 104, 159, 0.34);
+      border-radius: 10px;
+      background: rgba(10, 24, 43, 0.92);
+      cursor: pointer;
+    }
+
+    .list-item.active {
+      border-color: #4a88ff;
+      background: rgba(26, 51, 90, 0.94);
+    }
+
+    .list-item-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .list-main {
+      min-width: 0;
+    }
+
+    .item-title {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .item-sub,
+    .small-text {
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .chip.blue {
+      background: rgba(39, 110, 241, 0.18);
+      border-color: rgba(74, 136, 255, 0.4);
+      color: #8ab5ff;
+    }
+
+    .chip.green {
+      background: rgba(34, 197, 94, 0.16);
+      border-color: rgba(61, 217, 116, 0.4);
+      color: #7be29f;
+    }
+
+    .chip.yellow {
+      background: rgba(251, 191, 36, 0.16);
+      border-color: rgba(251, 191, 36, 0.45);
+      color: #ffd76d;
+    }
+
+    .chip.red {
+      background: rgba(239, 68, 68, 0.16);
+      border-color: rgba(248, 113, 113, 0.4);
+      color: #ff9ba6;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .detail-box {
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(71, 104, 159, 0.34);
+      background: rgba(10, 24, 43, 0.92);
+    }
+
+    .detail-label {
+      color: #8aa6ce;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .detail-value {
+      font-weight: 700;
+      line-height: 1.45;
+      white-space: pre-wrap;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .form-grid .full {
+      grid-column: 1 / -1;
+    }
+
+    textarea.field {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .empty {
+      padding: 34px 18px;
+      border: 1px dashed rgba(86, 122, 180, 0.4);
+      border-radius: 10px;
+      text-align: center;
+      color: var(--muted);
+      background: rgba(9, 21, 38, 0.65);
+    }
+
+    .search-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+    }
+
+    .table-head {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr .8fr auto;
+      gap: 12px;
+      padding: 0 16px 10px;
+      color: #7d9dc7;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+    }
+
+    .record-row {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr .8fr auto;
+      gap: 12px;
+      padding: 14px 16px;
+      align-items: center;
+      border-top: 1px solid rgba(69, 112, 184, 0.2);
+      background: rgba(9, 20, 37, 0.7);
+    }
+
+    .record-row:first-of-type {
+      border-top: none;
+    }
+
+    .record-row button {
+      justify-self: end;
+    }
+
+    @media (max-width: 1100px) {
+      .metrics,
+      .two-col {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .main,
+      .screen {
+        padding: 16px;
+      }
+
+      .metrics,
+      .two-col,
+      .form-grid,
+      .detail-grid,
+      .unit-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .table-head,
+      .record-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="screen" id="loginScreen">
+    <div class="auth-card">
+      <div class="card-top">
+        <div class="brand-badge">KP</div>
+        <div class="title">Kronborg Politi</div>
+        <div class="subtitle">Mobil Data Terminal</div>
+      </div>
+      <form class="form-body stack" id="loginForm">
+        <div>
+          <label class="field-label" for="loginEmail">Brugernavn (email)</label>
+          <input class="field" id="loginEmail" type="email" placeholder="betjent123@gmail.dk" autocomplete="off" />
+        </div>
+        <div>
+          <label class="field-label" for="loginPassword">Adgangskode</label>
+          <input class="field" id="loginPassword" type="password" placeholder="Indtast adgangskode" />
+        </div>
+        <div class="error-text" id="loginError"></div>
+        <button class="btn btn-primary" type="submit">Log ind</button>
+      </form>
+      <div class="auth-footer">
+        <span>Adgang gives kun til godkendt betjent-email.</span>
+        <button class="btn btn-ghost" id="openRegister" type="button">Registrer</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen hidden" id="registerScreen">
+    <div class="auth-card" style="max-width: 620px;">
+      <div class="card-top">
+        <div class="brand-badge">KP</div>
+        <div class="title" style="font-size: 42px;">Opret konto</div>
+        <div class="subtitle">Kronborg Politi MDT</div>
+      </div>
+      <div class="form-body stack">
+        <div class="hint">Denne side er kun en front-end prototype. Login ind i systemet med <strong>betjent123@gmail.dk</strong> for at komme videre til MDT'en.</div>
+        <div class="form-grid">
+          <div>
+            <label class="field-label">Email</label>
+            <input class="field" type="email" placeholder="betjent123@gmail.dk" />
+          </div>
+          <div>
+            <label class="field-label">Adgangskode</label>
+            <input class="field" type="password" placeholder="Minimum 6 tegn" />
+          </div>
+          <div>
+            <label class="field-label">Fornavn</label>
+            <input class="field" type="text" placeholder="Fornavn" />
+          </div>
+          <div>
+            <label class="field-label">Efternavn</label>
+            <input class="field" type="text" placeholder="Efternavn" />
+          </div>
+          <div>
+            <label class="field-label">P-nummer</label>
+            <input class="field" type="text" placeholder="P-00" />
+          </div>
+          <div>
+            <label class="field-label">Afdeling</label>
+            <select class="field">
+              <option>Patrulje</option>
+              <option>AKS</option>
+              <option>Civil</option>
+              <option>MC</option>
+            </select>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="backToLogin" type="button">Tilbage til login</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen hidden" id="gateScreen">
+    <div class="gate-card">
+      <div class="card-top">
+        <div class="brand-badge">KP</div>
+        <div class="title" style="font-size: 46px;">FLAADE SYSTEM</div>
+        <div class="subtitle">Vaelg din enhed og indtast P-nummer</div>
+      </div>
+      <form class="gate-body stack" id="gateForm">
+        <div>
+          <div class="section-label">Enhedstype</div>
+          <div class="unit-grid" id="gateUnitGrid">
+            <button class="unit-option active" type="button" data-unit="Patrulje">Patrulje</button>
+            <button class="unit-option" type="button" data-unit="AKS">AKS</button>
+            <button class="unit-option" type="button" data-unit="MC">MC</button>
+            <button class="unit-option" type="button" data-unit="Civil">Civil</button>
+          </div>
+        </div>
+        <div>
+          <label class="field-label" for="gatePNumber">Bekraeft P-nummer</label>
+          <input class="field" id="gatePNumber" type="text" placeholder="P-00" autocomplete="off" />
+        </div>
+        <div>
+          <label class="field-label" for="gateCallsign">Kaldesignal</label>
+          <input class="field" id="gateCallsign" type="text" placeholder="21-02" autocomplete="off" />
+        </div>
+        <div class="error-text" id="gateError"></div>
+        <button class="btn btn-primary" type="submit">Meld paa vagt nu</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="app-shell hidden" id="appShell">
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="brand-mini">
+          <div class="brand-mini-badge">KP</div>
+          <div>
+            <div class="brand-mini-name">Kronborg Politi</div>
+            <div class="brand-mini-sub">Politi MDT</div>
+          </div>
+        </div>
+        <nav class="nav" id="nav"></nav>
+      </div>
+      <div class="topbar-right">
+        <div class="clock" id="clock">00.00.00</div>
+        <div class="p-tag" id="topPNumber">P-00</div>
+        <select class="field status-select" id="topStatus">
+          <option value="On Duty">On Duty</option>
+          <option value="Pause">Pause</option>
+          <option value="Out of Service">Out of Service</option>
+          <option value="Offline">Offline</option>
+        </select>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="page active" data-page="home" id="page-home">
+        <div class="hero">
+          <div class="hero-top">
+            <div>
+              <div class="hero-kicker">Kronborg Politi</div>
+              <h2>Operativt overblik</h2>
+            </div>
+            <div class="small-text" id="welcomeText">Velkommen</div>
+          </div>
+          <div class="hero-note">
+            Systemet samler flaade, personregister, straffeattester, lovovertraedelser og boedelog i samme MDT.
+          </div>
+        </div>
+
+        <div class="metrics">
+          <div class="metric-card">
+            <div class="metric-number blue" id="metricUnits">0</div>
+            <div class="metric-label">Aktive enheder</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-number green" id="metricAvailable">0</div>
+            <div class="metric-label">Tilgaengelig</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-number yellow" id="metricCases">0</div>
+            <div class="metric-label">Lovovertraedelser</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-number red" id="metricFines">0</div>
+            <div class="metric-label">Boeder registreret</div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">Seneste aktivitet</div>
+            </div>
+            <div class="panel-body">
+              <div class="list" id="activityList"></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">Hurtigt overblik</div>
+            </div>
+            <div class="panel-body">
+              <div class="detail-grid">
+                <div class="detail-box">
+                  <div class="detail-label">P-nummer</div>
+                  <div class="detail-value" id="quickPnumber">P-00</div>
+                </div>
+                <div class="detail-box">
+                  <div class="detail-label">Enhed</div>
+                  <div class="detail-value" id="quickUnit">Patrulje</div>
+                </div>
+                <div class="detail-box">
+                  <div class="detail-label">Kaldesignal</div>
+                  <div class="detail-value" id="quickCallsign">21-02</div>
+                </div>
+                <div class="detail-box">
+                  <div class="detail-label">Status</div>
+                  <div class="detail-value" id="quickStatus">On Duty</div>
+                </div>
+                <div class="detail-box" style="grid-column: 1 / -1;">
+                  <div class="detail-label">Aktuel note</div>
+                  <div class="detail-value" id="quickNote">Ingen note registreret.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" data-page="flaade" id="page-flaade">
+        <div class="two-col">
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">Aktive enheder</div>
+            </div>
+            <div class="panel-body">
+              <div class="list" id="fleetList"></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">Opdater enhed</div>
+            </div>
+            <div class="panel-body">
+              <form class="stack" id="fleetForm">
+                <div class="form-grid">
+                  <div>
+                    <label class="field-label">RP-navn</label>
+                    <input class="field" id="fleetName" type="text" placeholder="Magnus Thomsen" />
+                  </div>
+                  <div>
+                    <label class="field-label">P-nummer</label>
+                    <input class="field" id="fleetPnumber" type="text" placeholder="P-00" />
+                  </div>
+                  <div>
+                    <label class="field-label">Enhed</label>
+                    <select class="field" id="fleetUnit">
+                      <option>Patrulje</option>
+                      <option>Bravo</option>
+                      <option>Romeo</option>
+                      <option>MC</option>
+                      <option>Civil</option>
+                      <option>AKS</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="field-label">Kaldesignal</label>
+                    <input class="field" id="fleetCallsign" type="text" placeholder="21-02" />
+                  </div>
+                  <div>
+                    <label class="field-label">Makker</label>
+                    <input class="field" id="fleetPartner" type="text" placeholder="Navn paa makker" />
+                  </div>
+                  <div>
+                    <label class="field-label">Status</label>
+                    <select class="field" id="fleetStatus">
+                      <option>On Duty</option>
+                      <option>Pause</option>
+                      <option>Out of Service</option>
+                      <option>Offline</option>
+                    </select>
+                  </div>
+                  <div class="full">
+                    <label class="field-label">Noter</label>
+                    <textarea class="field" id="fleetNote" placeholder="Eksempel: jeg mangler en makker at koere med"></textarea>
+                  </div>
+                </div>
+                <div class="btn-row">
+                  <button class="btn btn-primary" type="submit">Gem enhed</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" data-page="register" id="page-register">
+        <div class="two-col">
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">Person register</div>
+            </div>
+            <div class="panel-body stack">
+              <div class="search-row">
+                <input class="field" id="personSearch" type="text" placeholder="Soeg navn eller CPR..." />
+                <button class="btn" id="personClear" type="button">Ryd</button>
+              </div>
+              <div class="list" id="personList"></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">Person detaljer</div>
+            </div>
+            <div class="panel-body" id="personDetail"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" data-page="attester" id="page-attester">
+        <div class="two-col">
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">Straffeattester</div>
+            </div>
+            <div class="panel-body stack">
+              <input class="field" id="attestSearch" type="text" placeholder="Soeg borger..." />
+              <div class="list" id="attestList"></div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">Attest</div>
+            </div>
+            <div class="panel-body" id="attestDetail"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" data-page="offenses" id="page-offenses">
+        <div class="two-col">
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">Lovovertraedelser</div>
+            </div>
+            <div class="panel-body stack">
+              <form class="stack" id="offenseForm">
+                <div class="form-grid">
+                  <div>
+                    <label class="field-label">Navn</label>
+                    <input class="field" id="offenseName" type="text" placeholder="Navn paa borger" />
+                  </div>
+                  <div>
+                    <label class="field-label">Alder</label>
+                    <input class="field" id="offenseAge" type="number" min="0" placeholder="24" />
+                  </div>
+                  <div>
+                    <label class="field-label">CPR</label>
+                    <input class="field" id="offenseCpr" type="text" placeholder="DDMMYY-XXXX" />
+                  </div>
+                  <div>
+                    <label class="field-label">Dato</label>
+                    <input class="field" id="offenseDate" type="date" />
+                  </div>
+                  <div class="full">
+                    <label class="field-label">Sigtelse</label>
+                    <input class="field" id="offenseCharge" type="text" placeholder="Kort beskrivelse af sigtelse" />
+                  </div>
+                  <div>
+                    <label class="field-label">Vidner</label>
+                    <input class="field" id="offenseWitnesses" type="text" placeholder="Navne paa vidner" />
+                  </div>
+                  <div>
+                    <label class="field-label">Betjent</label>
+                    <input class="field" id="offenseOfficer" type="text" placeholder="Betjent navn" />
+                  </div>
+                  <div class="full">
+                    <label class="field-label">Rapport</label>
+                    <textarea class="field" id="offenseReport" placeholder="Skriv rapport og haendelsesforloeb"></textarea>
+                  </div>
+                </div>
+                <div class="btn-row">
+                  <button class="btn btn-primary" type="submit">Gem lovovertraedelse</button>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">Registrerede sager</div>
+            </div>
+            <div class="panel-body">
+              <div class="list" id="offenseList"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" data-page="fines" id="page-fines">
+        <div class="two-col">
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">Boedelog</div>
+            </div>
+            <div class="panel-body stack">
+              <form class="stack" id="fineForm">
+                <div class="form-grid">
+                  <div>
+                    <label class="field-label">Navn</label>
+                    <input class="field" id="fineName" type="text" placeholder="Navn paa borger" />
+                  </div>
+                  <div>
+                    <label class="field-label">Alder</label>
+                    <input class="field" id="fineAge" type="number" min="0" placeholder="24" />
+                  </div>
+                  <div>
+                    <label class="field-label">CPR</label>
+                    <input class="field" id="fineCpr" type="text" placeholder="DDMMYY-XXXX" />
+                  </div>
+                  <div>
+                    <label class="field-label">Dato</label>
+                    <input class="field" id="fineDate" type="date" />
+                  </div>
+                  <div class="full">
+                    <label class="field-label">Sigtelse</label>
+                    <input class="field" id="fineCharge" type="text" placeholder="Eksempel: hastighedsovertradelse" />
+                  </div>
+                  <div>
+                    <label class="field-label">Vidner</label>
+                    <input class="field" id="fineWitnesses" type="text" placeholder="Navne paa vidner" />
+                  </div>
+                  <div>
+                    <label class="field-label">Betjent</label>
+                    <input class="field" id="fineOfficer" type="text" placeholder="Betjent navn" />
+                  </div>
+                  <div>
+                    <label class="field-label">Beloeb (kr.)</label>
+                    <input class="field" id="fineAmount" type="number" min="0" placeholder="1500" />
+                  </div>
+                  <div class="full">
+                    <label class="field-label">Noter</label>
+                    <textarea class="field" id="fineReport" placeholder="Supplerende noter til boeden"></textarea>
+                  </div>
+                </div>
+                <div class="btn-row">
+                  <button class="btn btn-primary" type="submit">Gem boede</button>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">Registrerede boeder</div>
+            </div>
+            <div class="panel-body">
+              <div class="list" id="fineList"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </section>
+
+  <script>
+    const STORAGE_KEY = "kronborg-politi-mdt-v2";
+    const LOGIN_EMAIL = "betjent123@gmail.dk";
+
+    const defaultState = {
+      auth: {
+        email: "",
+        loggedIn: false,
+        gatePassed: false,
+        activePage: "home"
+      },
+      profile: {
+        rpName: "Kronborg Betjent",
+        pNumber: "",
+        unit: "Patrulje",
+        callsign: "",
+        partner: "",
+        status: "On Duty",
+        note: ""
+      },
+      fleet: [],
+      offenses: [],
+      fines: []
+    };
+
+    const navItems = [
+      { id: "home", label: "Home" },
+      { id: "flaade", label: "Flaadestyring" },
+      { id: "register", label: "Person Register" },
+      { id: "attester", label: "Straffeattester" },
+      { id: "offenses", label: "Lovovertraedelser" },
+      { id: "fines", label: "Boedelog" }
+    ];
+
+    const state = loadState();
+    let selectedFleetId = null;
+    let selectedPersonKey = null;
+    let selectedAttestKey = null;
+
+    const loginScreen = document.getElementById("loginScreen");
+    const registerScreen = document.getElementById("registerScreen");
+    const gateScreen = document.getElementById("gateScreen");
+    const appShell = document.getElementById("appShell");
+
+    const loginForm = document.getElementById("loginForm");
+    const loginEmail = document.getElementById("loginEmail");
+    const loginPassword = document.getElementById("loginPassword");
+    const loginError = document.getElementById("loginError");
+
+    const openRegister = document.getElementById("openRegister");
+    const backToLogin = document.getElementById("backToLogin");
+
+    const gateForm = document.getElementById("gateForm");
+    const gateUnitGrid = document.getElementById("gateUnitGrid");
+    const gatePNumber = document.getElementById("gatePNumber");
+    const gateCallsign = document.getElementById("gateCallsign");
+    const gateError = document.getElementById("gateError");
+
+    const nav = document.getElementById("nav");
+    const topPNumber = document.getElementById("topPNumber");
+    const topStatus = document.getElementById("topStatus");
+    const clock = document.getElementById("clock");
+    const welcomeText = document.getElementById("welcomeText");
+
+    const metricUnits = document.getElementById("metricUnits");
+    const metricAvailable = document.getElementById("metricAvailable");
+    const metricCases = document.getElementById("metricCases");
+    const metricFines = document.getElementById("metricFines");
+    const activityList = document.getElementById("activityList");
+    const quickPnumber = document.getElementById("quickPnumber");
+    const quickUnit = document.getElementById("quickUnit");
+    const quickCallsign = document.getElementById("quickCallsign");
+    const quickStatus = document.getElementById("quickStatus");
+    const quickNote = document.getElementById("quickNote");
+
+    const fleetList = document.getElementById("fleetList");
+    const fleetForm = document.getElementById("fleetForm");
+    const fleetName = document.getElementById("fleetName");
+    const fleetPnumber = document.getElementById("fleetPnumber");
+    const fleetUnit = document.getElementById("fleetUnit");
+    const fleetCallsign = document.getElementById("fleetCallsign");
+    const fleetPartner = document.getElementById("fleetPartner");
+    const fleetStatus = document.getElementById("fleetStatus");
+    const fleetNote = document.getElementById("fleetNote");
+
+    const personSearch = document.getElementById("personSearch");
+    const personClear = document.getElementById("personClear");
+    const personList = document.getElementById("personList");
+    const personDetail = document.getElementById("personDetail");
+
+    const attestSearch = document.getElementById("attestSearch");
+    const attestList = document.getElementById("attestList");
+    const attestDetail = document.getElementById("attestDetail");
+
+    const offenseForm = document.getElementById("offenseForm");
+    const offenseList = document.getElementById("offenseList");
+
+    const fineForm = document.getElementById("fineForm");
+    const fineList = document.getElementById("fineList");
+
+    buildNav();
+    attachEvents();
+    tickClock();
+    setInterval(tickClock, 1000);
+    showCurrentScreen();
+    renderAll();
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return structuredClone(defaultState);
+        const parsed = JSON.parse(raw);
+        return deepMerge(structuredClone(defaultState), parsed);
+      } catch {
+        return structuredClone(defaultState);
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function deepMerge(base, incoming) {
+      for (const key of Object.keys(incoming || {})) {
+        const value = incoming[key];
+        if (value && typeof value === "object" && !Array.isArray(value) && typeof base[key] === "object" && base[key] !== null) {
+          base[key] = deepMerge(base[key], value);
+        } else {
+          base[key] = value;
+        }
+      }
+      return base;
+    }
+
+    function buildNav() {
+      nav.innerHTML = "";
+      navItems.forEach((item) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "nav-btn";
+        button.textContent = item.label;
+        button.dataset.page = item.id;
+        button.addEventListener("click", () => setActivePage(item.id));
+        nav.appendChild(button);
+      });
+    }
+
+    function attachEvents() {
+      openRegister.addEventListener("click", () => {
+        loginScreen.classList.add("hidden");
+        registerScreen.classList.remove("hidden");
+      });
+
+      backToLogin.addEventListener("click", () => {
+        registerScreen.classList.add("hidden");
+        loginScreen.classList.remove("hidden");
+      });
+
+      loginForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const email = loginEmail.value.trim().toLowerCase();
+        const password = loginPassword.value.trim();
+
+        if (email !== LOGIN_EMAIL) {
+          loginError.textContent = "Du skal skrive betjent123@gmail.dk for at komme ind.";
+          return;
+        }
+
+        if (!password) {
+          loginError.textContent = "Indtast adgangskode for at fortsatte.";
+          return;
+        }
+
+        state.auth.email = email;
+        state.auth.loggedIn = true;
+        state.auth.gatePassed = false;
+        saveState();
+        loginError.textContent = "";
+        showCurrentScreen();
+      });
+
+      gateUnitGrid.addEventListener("click", (event) => {
+        const target = event.target.closest("[data-unit]");
+        if (!target) return;
+        [...gateUnitGrid.querySelectorAll("[data-unit]")].forEach((node) => node.classList.remove("active"));
+        target.classList.add("active");
+      });
+
+      gateForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const activeUnit = gateUnitGrid.querySelector(".unit-option.active")?.dataset.unit || "Patrulje";
+        const pNumber = gatePNumber.value.trim().toUpperCase();
+        const callsign = gateCallsign.value.trim();
+
+        if (!pNumber) {
+          gateError.textContent = "Du skal indtaste et P-nummer for at gaa paa vagt.";
+          return;
+        }
+
+        state.profile.pNumber = pNumber;
+        state.profile.unit = activeUnit;
+        state.profile.callsign = callsign || "21-02";
+        state.profile.status = state.profile.status || "On Duty";
+        state.auth.gatePassed = true;
+
+        upsertOwnFleetEntry();
+        saveState();
+        gateError.textContent = "";
+        showCurrentScreen();
+        renderAll();
+      });
+
+      topStatus.addEventListener("change", () => {
+        state.profile.status = topStatus.value;
+        const own = getOwnFleetEntry();
+        if (own) own.status = topStatus.value;
+        saveState();
+        renderAll();
+      });
+
+      fleetForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        state.profile.rpName = fleetName.value.trim() || "Kronborg Betjent";
+        state.profile.pNumber = fleetPnumber.value.trim().toUpperCase();
+        state.profile.unit = fleetUnit.value;
+        state.profile.callsign = fleetCallsign.value.trim();
+        state.profile.partner = fleetPartner.value.trim();
+        state.profile.status = fleetStatus.value;
+        state.profile.note = fleetNote.value.trim();
+        topStatus.value = state.profile.status;
+        upsertOwnFleetEntry();
+        saveState();
+        renderAll();
+      });
+
+      personSearch.addEventListener("input", renderPersons);
+      personClear.addEventListener("click", () => {
+        personSearch.value = "";
+        selectedPersonKey = null;
+        renderPersons();
+      });
+
+      attestSearch.addEventListener("input", renderAttester);
+
+      offenseForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const form = getFormValues("offense");
+        if (!form.name || !form.charge || !form.officer) return;
+
+        state.offenses.unshift({
+          id: uid(),
+          type: "offense",
+          name: form.name,
+          age: form.age,
+          cpr: form.cpr,
+          date: form.date || todayValue(),
+          charge: form.charge,
+          witnesses: form.witnesses,
+          officer: form.officer,
+          report: form.report
+        });
+
+        clearOffenseForm();
+        saveState();
+        renderAll();
+        setActivePage("offenses");
+      });
+
+      fineForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const form = getFormValues("fine");
+        if (!form.name || !form.charge || !form.officer) return;
+
+        state.fines.unshift({
+          id: uid(),
+          type: "fine",
+          name: form.name,
+          age: form.age,
+          cpr: form.cpr,
+          date: form.date || todayValue(),
+          charge: form.charge,
+          witnesses: form.witnesses,
+          officer: form.officer,
+          amount: Number(form.amount || 0),
+          report: form.report
+        });
+
+        clearFineForm();
+        saveState();
+        renderAll();
+        setActivePage("fines");
+      });
+    }
+
+    function showCurrentScreen() {
+      loginScreen.classList.toggle("hidden", state.auth.loggedIn || registerScreenIsOpen());
+      registerScreen.classList.toggle("hidden", !registerScreenIsOpen());
+      gateScreen.classList.toggle("hidden", !(state.auth.loggedIn && !state.auth.gatePassed));
+      appShell.classList.toggle("hidden", !(state.auth.loggedIn && state.auth.gatePassed));
+
+      if (!state.auth.loggedIn) {
+        registerScreen.classList.add("hidden");
+        loginScreen.classList.remove("hidden");
+      }
+    }
+
+    function registerScreenIsOpen() {
+      return !registerScreen.classList.contains("hidden");
+    }
+
+    function setActivePage(page) {
+      state.auth.activePage = page;
+      document.querySelectorAll(".page").forEach((node) => node.classList.toggle("active", node.dataset.page === page));
+      document.querySelectorAll(".nav-btn").forEach((node) => node.classList.toggle("active", node.dataset.page === page));
+      saveState();
+      renderAll();
+    }
+
+    function renderAll() {
+      if (state.auth.gatePassed) {
+        const currentPage = state.auth.activePage || "home";
+        document.querySelectorAll(".page").forEach((node) => node.classList.toggle("active", node.dataset.page === currentPage));
+        document.querySelectorAll(".nav-btn").forEach((node) => node.classList.toggle("active", node.dataset.page === currentPage));
+      }
+      renderHeader();
+      renderHome();
+      renderFleet();
+      renderPersons();
+      renderAttester();
+      renderOffenses();
+      renderFines();
+    }
+
+    function renderHeader() {
+      topPNumber.textContent = state.profile.pNumber || "P-00";
+      topStatus.value = state.profile.status || "On Duty";
+      welcomeText.textContent = `Velkommen, ${state.profile.rpName || "Kronborg Betjent"} | ${state.profile.pNumber || "P-00"}`;
+    }
+
+    function renderHome() {
+      const activeFleet = state.fleet.filter((entry) => entry.status !== "Offline");
+      const availableFleet = state.fleet.filter((entry) => entry.status === "On Duty");
+      metricUnits.textContent = String(activeFleet.length);
+      metricAvailable.textContent = String(availableFleet.length);
+      metricCases.textContent = String(state.offenses.length);
+      metricFines.textContent = String(state.fines.length);
+
+      quickPnumber.textContent = state.profile.pNumber || "P-00";
+      quickUnit.textContent = state.profile.unit || "Patrulje";
+      quickCallsign.textContent = state.profile.callsign || "21-02";
+      quickStatus.textContent = state.profile.status || "On Duty";
+      quickNote.textContent = state.profile.note || "Ingen note registreret.";
+
+      const items = [
+        ...state.fines.map((item) => ({
+          id: item.id,
+          title: `${item.name} fik boede paa ${formatMoney(item.amount)}`,
+          meta: `${formatDate(item.date)} | ${item.charge}`,
+          chip: "Boede",
+          color: "blue"
+        })),
+        ...state.offenses.map((item) => ({
+          id: item.id,
+          title: `${item.name} registreret for ${item.charge}`,
+          meta: `${formatDate(item.date)} | Betjent: ${item.officer}`,
+          chip: "Sag",
+          color: "yellow"
+        }))
+      ]
+      .sort((a, b) => String(b.id).localeCompare(String(a.id)))
+      .slice(0, 6);
+
+      activityList.innerHTML = "";
+      if (!items.length) {
+        activityList.innerHTML = `<div class="empty">Ingen aktivitet endnu. Opret en boede eller lovovertraedelse for at faa aktivitet i home.</div>`;
+        return;
+      }
+
+      items.forEach((item) => {
+        const row = document.createElement("div");
+        row.className = "list-item";
+        row.innerHTML = `
+          <div class="list-item-row">
+            <div class="list-main">
+              <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px;">
+                <span class="chip ${item.color}">${item.chip}</span>
+                <strong>${escapeHtml(item.title)}</strong>
+              </div>
+              <div class="small-text">${escapeHtml(item.meta)}</div>
+            </div>
+          </div>
+        `;
+        activityList.appendChild(row);
+      });
+    }
+
+    function renderFleet() {
+      upsertOwnFleetEntry();
+      fleetName.value = state.profile.rpName || "";
+      fleetPnumber.value = state.profile.pNumber || "";
+      fleetUnit.value = state.profile.unit || "Patrulje";
+      fleetCallsign.value = state.profile.callsign || "";
+      fleetPartner.value = state.profile.partner || "";
+      fleetStatus.value = state.profile.status || "On Duty";
+      fleetNote.value = state.profile.note || "";
+
+      const ownId = getOwnFleetEntry()?.id;
+      selectedFleetId = selectedFleetId || ownId;
+
+      fleetList.innerHTML = "";
+      if (!state.fleet.length) {
+        fleetList.innerHTML = `<div class="empty">Ingen aktive enheder.</div>`;
+        return;
+      }
+
+      state.fleet.forEach((entry) => {
+        const row = document.createElement("div");
+        row.className = `list-item ${selectedFleetId === entry.id ? "active" : ""}`;
+        row.innerHTML = `
+          <div class="list-item-row">
+            <div class="list-main">
+              <div class="item-title" style="font-size:22px;">${escapeHtml(entry.rpName || "Ukendt betjent")}</div>
+              <div class="item-sub">${escapeHtml(entry.unit)} | ${escapeHtml(entry.callsign || "Ingen kanal")} | ${escapeHtml(entry.pNumber || "P-00")}</div>
+              <div class="small-text" style="margin-top:8px;">${escapeHtml(entry.note || "Ingen note.")}</div>
+            </div>
+            <div style="display:grid;gap:8px;justify-items:end;">
+              <span class="chip ${statusColor(entry.status)}">${escapeHtml(entry.status)}</span>
+              ${entry.id === ownId ? `<span class="chip blue">Min enhed</span>` : ""}
+            </div>
+          </div>
+        `;
+        row.addEventListener("click", () => {
+          selectedFleetId = entry.id;
+          if (entry.id === ownId) {
+            fleetName.value = entry.rpName || "";
+            fleetPnumber.value = entry.pNumber || "";
+            fleetUnit.value = entry.unit || "Patrulje";
+            fleetCallsign.value = entry.callsign || "";
+            fleetPartner.value = entry.partner || "";
+            fleetStatus.value = entry.status || "On Duty";
+            fleetNote.value = entry.note || "";
+          }
+          renderFleet();
+        });
+        fleetList.appendChild(row);
+      });
+    }
+
+    function renderPersons() {
+      const people = buildPeopleIndex();
+      const query = personSearch.value.trim().toLowerCase();
+      const filtered = people.filter((person) => {
+        if (!query) return true;
+        return [person.name, person.cpr].join(" ").toLowerCase().includes(query);
+      });
+
+      if (!selectedPersonKey && filtered[0]) selectedPersonKey = filtered[0].key;
+      if (filtered.length && !filtered.some((p) => p.key === selectedPersonKey)) selectedPersonKey = filtered[0].key;
+      if (!filtered.length) selectedPersonKey = null;
+
+      personList.innerHTML = "";
+      if (!filtered.length) {
+        personList.innerHTML = `<div class="empty">Ingen borgere fundet endnu. Opret en boede eller lovovertraedelse for at opbygge registeret.</div>`;
+        personDetail.innerHTML = `<div class="empty">Ingen person valgt.</div>`;
+        return;
+      }
+
+      filtered.forEach((person) => {
+        const finesTotal = person.fines.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+        const row = document.createElement("div");
+        row.className = `list-item ${selectedPersonKey === person.key ? "active" : ""}`;
+        row.innerHTML = `
+          <div class="list-item-row">
+            <div class="list-main">
+              <div class="item-title" style="font-size:22px;">${escapeHtml(person.name)}</div>
+              <div class="item-sub">${escapeHtml(person.cpr || "CPR ikke oplyst")} | Alder: ${escapeHtml(person.age || "-")}</div>
+              <div class="small-text" style="margin-top:8px;">${person.offenses.length} lovovertraedelser | ${person.fines.length} boeder | ${formatMoney(finesTotal)}</div>
+            </div>
+            <button class="btn btn-ghost" type="button">Se mere</button>
+          </div>
+        `;
+        row.addEventListener("click", () => {
+          selectedPersonKey = person.key;
+          renderPersons();
+        });
+        personList.appendChild(row);
+      });
+
+      const active = filtered.find((person) => person.key === selectedPersonKey) || filtered[0];
+      personDetail.innerHTML = renderPersonDetail(active);
+    }
+
+    function renderPersonDetail(person) {
+      if (!person) return `<div class="empty">Ingen person valgt.</div>`;
+      const allEvents = [
+        ...person.offenses.map((item) => ({ ...item, label: "Lovovertraedelse" })),
+        ...person.fines.map((item) => ({ ...item, label: "Boede" }))
+      ].sort((a, b) => String(b.id).localeCompare(String(a.id)));
+
+      return `
+        <div class="stack">
+          <div class="detail-grid">
+            <div class="detail-box">
+              <div class="detail-label">Navn</div>
+              <div class="detail-value">${escapeHtml(person.name)}</div>
+            </div>
+            <div class="detail-box">
+              <div class="detail-label">CPR</div>
+              <div class="detail-value">${escapeHtml(person.cpr || "Ikke oplyst")}</div>
+            </div>
+            <div class="detail-box">
+              <div class="detail-label">Alder</div>
+              <div class="detail-value">${escapeHtml(person.age || "-")}</div>
+            </div>
+            <div class="detail-box">
+              <div class="detail-label">Samlet boeder</div>
+              <div class="detail-value">${formatMoney(person.fines.reduce((sum, item) => sum + Number(item.amount || 0), 0))}</div>
+            </div>
+          </div>
+          <div class="panel-title">Historik</div>
+          ${allEvents.length ? `
+            <div style="border:1px solid rgba(69,112,184,.2);border-radius:10px;overflow:hidden;">
+              <div class="table-head">
+                <div>Type / sag</div>
+                <div>Dato</div>
+                <div>Betjent</div>
+                <div>Status</div>
+              </div>
+              ${allEvents.map((item) => `
+                <div class="record-row">
+                  <div>
+                    <strong>${escapeHtml(item.charge)}</strong>
+                    <div class="small-text">${escapeHtml(item.label)}${item.amount ? ` | ${formatMoney(item.amount)}` : ""}</div>
+                  </div>
+                  <div>${escapeHtml(formatDate(item.date))}</div>
+                  <div>${escapeHtml(item.officer || "-")}</div>
+                  <div><span class="chip ${item.label === "Boede" ? "blue" : "yellow"}">${escapeHtml(item.label)}</span></div>
+                </div>
+              `).join("")}
+            </div>
+          ` : `<div class="empty">Ingen historik registreret.</div>`}
+        </div>
+      `;
+    }
+
+    function renderAttester() {
+      const people = buildPeopleIndex();
+      const query = attestSearch.value.trim().toLowerCase();
+      const filtered = people.filter((person) => {
+        if (!query) return true;
+        return person.name.toLowerCase().includes(query) || person.cpr.toLowerCase().includes(query);
+      });
+
+      if (!selectedAttestKey && filtered[0]) selectedAttestKey = filtered[0].key;
+      if (filtered.length && !filtered.some((person) => person.key === selectedAttestKey)) selectedAttestKey = filtered[0].key;
+      if (!filtered.length) selectedAttestKey = null;
+
+      attestList.innerHTML = "";
+      if (!filtered.length) {
+        attestList.innerHTML = `<div class="empty">Ingen straffeattester endnu.</div>`;
+        attestDetail.innerHTML = `<div class="empty">Ingen attest valgt.</div>`;
+        return;
+      }
+
+      filtered.forEach((person) => {
+        const score = person.offenses.length + person.fines.length;
+        const row = document.createElement("div");
+        row.className = `list-item ${selectedAttestKey === person.key ? "active" : ""}`;
+        row.innerHTML = `
+          <div class="list-item-row">
+            <div class="list-main">
+              <div class="item-title" style="font-size:22px;">${escapeHtml(person.name)}</div>
+              <div class="item-sub">${escapeHtml(person.cpr || "CPR ikke oplyst")}</div>
+            </div>
+            <span class="chip ${score ? "red" : "green"}">${score ? `${score} registreringer` : "Ren attest"}</span>
+          </div>
+        `;
+        row.addEventListener("click", () => {
+          selectedAttestKey = person.key;
+          renderAttester();
+        });
+        attestList.appendChild(row);
+      });
+
+      const active = filtered.find((person) => person.key === selectedAttestKey) || filtered[0];
+      const totalFine = active.fines.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+      attestDetail.innerHTML = `
+        <div class="stack">
+          <div class="detail-grid">
+            <div class="detail-box">
+              <div class="detail-label">Borger</div>
+              <div class="detail-value">${escapeHtml(active.name)}</div>
+            </div>
+            <div class="detail-box">
+              <div class="detail-label">CPR</div>
+              <div class="detail-value">${escapeHtml(active.cpr || "Ikke oplyst")}</div>
+            </div>
+            <div class="detail-box">
+              <div class="detail-label">Boeder i alt</div>
+              <div class="detail-value">${formatMoney(totalFine)}</div>
+            </div>
+            <div class="detail-box">
+              <div class="detail-label">Sager i alt</div>
+              <div class="detail-value">${active.offenses.length}</div>
+            </div>
+          </div>
+          <div class="panel-title">Registreret historik</div>
+          ${(active.offenses.length || active.fines.length) ? `
+            <div class="list">
+              ${active.offenses.map((item) => `
+                <div class="detail-box">
+                  <div class="detail-label">Lovovertraedelse | ${escapeHtml(formatDate(item.date))}</div>
+                  <div class="detail-value">${escapeHtml(item.charge)}</div>
+                  <div class="small-text" style="margin-top:8px;">Betjent: ${escapeHtml(item.officer)} | Vidner: ${escapeHtml(item.witnesses || "Ingen")}</div>
+                </div>
+              `).join("")}
+              ${active.fines.map((item) => `
+                <div class="detail-box">
+                  <div class="detail-label">Boede | ${escapeHtml(formatDate(item.date))}</div>
+                  <div class="detail-value">${escapeHtml(item.charge)} | ${formatMoney(item.amount)}</div>
+                  <div class="small-text" style="margin-top:8px;">Betjent: ${escapeHtml(item.officer)} | Vidner: ${escapeHtml(item.witnesses || "Ingen")}</div>
+                </div>
+              `).join("")}
+            </div>
+          ` : `<div class="empty">Ingen tidligere registreringer fundet.</div>`}
+        </div>
+      `;
+    }
+
+    function renderOffenses() {
+      offenseList.innerHTML = "";
+      if (!state.offenses.length) {
+        offenseList.innerHTML = `<div class="empty">Ingen lovovertraedelser registreret endnu.</div>`;
+        return;
+      }
+
+      state.offenses.forEach((item) => {
+        const row = document.createElement("div");
+        row.className = "list-item";
+        row.innerHTML = `
+          <div class="list-item-row">
+            <div class="list-main">
+              <div class="item-title" style="font-size:22px;">${escapeHtml(item.name)}</div>
+              <div class="item-sub">${escapeHtml(item.charge)}</div>
+              <div class="small-text" style="margin-top:8px;">${escapeHtml(formatDate(item.date))} | Betjent: ${escapeHtml(item.officer)} | CPR: ${escapeHtml(item.cpr || "Ikke oplyst")}</div>
+              <div class="small-text" style="margin-top:8px;">${escapeHtml(item.report || "Ingen rapport tilfoejet.")}</div>
+            </div>
+            <div style="display:grid;gap:8px;justify-items:end;">
+              <span class="chip yellow">Sag</span>
+              <button class="btn btn-danger" type="button" data-delete-offense="${item.id}">Slet</button>
+            </div>
+          </div>
+        `;
+        row.querySelector("[data-delete-offense]").addEventListener("click", (event) => {
+          event.stopPropagation();
+          state.offenses = state.offenses.filter((entry) => entry.id !== item.id);
+          saveState();
+          renderAll();
+        });
+        offenseList.appendChild(row);
+      });
+    }
+
+    function renderFines() {
+      fineList.innerHTML = "";
+      if (!state.fines.length) {
+        fineList.innerHTML = `<div class="empty">Ingen boeder registreret endnu.</div>`;
+        return;
+      }
+
+      state.fines.forEach((item) => {
+        const row = document.createElement("div");
+        row.className = "list-item";
+        row.innerHTML = `
+          <div class="list-item-row">
+            <div class="list-main">
+              <div class="item-title" style="font-size:22px;">${escapeHtml(item.name)}</div>
+              <div class="item-sub">${escapeHtml(item.charge)} | ${formatMoney(item.amount)}</div>
+              <div class="small-text" style="margin-top:8px;">${escapeHtml(formatDate(item.date))} | Betjent: ${escapeHtml(item.officer)} | CPR: ${escapeHtml(item.cpr || "Ikke oplyst")}</div>
+              <div class="small-text" style="margin-top:8px;">${escapeHtml(item.report || "Ingen noter tilfoejet.")}</div>
+            </div>
+            <div style="display:grid;gap:8px;justify-items:end;">
+              <span class="chip blue">Boede</span>
+              <button class="btn btn-danger" type="button" data-delete-fine="${item.id}">Slet</button>
+            </div>
+          </div>
+        `;
+        row.querySelector("[data-delete-fine]").addEventListener("click", (event) => {
+          event.stopPropagation();
+          state.fines = state.fines.filter((entry) => entry.id !== item.id);
+          saveState();
+          renderAll();
+        });
+        fineList.appendChild(row);
+      });
+    }
+
+    function getFormValues(prefix) {
+      const pick = (name) => document.getElementById(`${prefix}${name}`).value.trim();
+      return {
+        name: pick("Name"),
+        age: pick("Age"),
+        cpr: pick("Cpr"),
+        date: pick("Date"),
+        charge: pick("Charge"),
+        witnesses: pick("Witnesses"),
+        officer: pick("Officer"),
+        report: pick("Report"),
+        amount: prefix === "fine" ? pick("Amount") : ""
+      };
+    }
+
+    function clearOffenseForm() {
+      ["Name", "Age", "Cpr", "Date", "Charge", "Witnesses", "Officer", "Report"].forEach((name) => {
+        document.getElementById(`offense${name}`).value = "";
+      });
+    }
+
+    function clearFineForm() {
+      ["Name", "Age", "Cpr", "Date", "Charge", "Witnesses", "Officer", "Amount", "Report"].forEach((name) => {
+        document.getElementById(`fine${name}`).value = "";
+      });
+    }
+
+    function buildPeopleIndex() {
+      const map = new Map();
+      [...state.offenses, ...state.fines].forEach((item) => {
+        const key = `${(item.cpr || "").trim().toUpperCase()}|${(item.name || "").trim().toLowerCase()}`;
+        if (!map.has(key)) {
+          map.set(key, {
+            key,
+            name: item.name || "Ukendt borger",
+            cpr: item.cpr || "",
+            age: item.age || "",
+            offenses: [],
+            fines: []
+          });
+        }
+        const person = map.get(key);
+        if (!person.age && item.age) person.age = item.age;
+        if (item.type === "offense") person.offenses.push(item);
+        if (item.type === "fine") person.fines.push(item);
+      });
+      return [...map.values()].sort((a, b) => a.name.localeCompare(b.name, "da"));
+    }
+
+    function upsertOwnFleetEntry() {
+      if (!state.profile.pNumber) return;
+      let own = getOwnFleetEntry();
+      if (!own) {
+        own = { id: uid() };
+        state.fleet.unshift(own);
+      }
+      own.rpName = state.profile.rpName || "Kronborg Betjent";
+      own.pNumber = state.profile.pNumber || "P-00";
+      own.unit = state.profile.unit || "Patrulje";
+      own.callsign = state.profile.callsign || "21-02";
+      own.partner = state.profile.partner || "";
+      own.status = state.profile.status || "On Duty";
+      own.note = state.profile.note || "";
+      own.ownEntry = true;
+      state.fleet = state.fleet
+        .filter((entry, index, arr) => arr.findIndex((candidate) => candidate.pNumber === entry.pNumber) === index)
+        .sort((a, b) => (a.ownEntry === b.ownEntry ? 0 : a.ownEntry ? -1 : 1));
+    }
+
+    function getOwnFleetEntry() {
+      return state.fleet.find((entry) => entry.pNumber === state.profile.pNumber);
+    }
+
+    function tickClock() {
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2, "0");
+      const mm = String(now.getMinutes()).padStart(2, "0");
+      const ss = String(now.getSeconds()).padStart(2, "0");
+      clock.textContent = `${hh}.${mm}.${ss}`;
+    }
+
+    function formatMoney(value) {
+      return `${Number(value || 0).toLocaleString("da-DK")} kr.`;
+    }
+
+    function formatDate(value) {
+      if (!value) return "Ingen dato";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return value;
+      return date.toLocaleDateString("da-DK");
+    }
+
+    function todayValue() {
+      return new Date().toISOString().slice(0, 10);
+    }
+
+    function uid() {
+      return `${Date.now()}-${Math.random().toString(16).slice(2, 8)}`;
+    }
+
+    function statusColor(status) {
+      if (status === "On Duty") return "green";
+      if (status === "Pause") return "yellow";
+      if (status === "Out of Service") return "red";
+      return "blue";
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+  </script>
+</body>
+</html>
